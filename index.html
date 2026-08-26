@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="A calm focus timer that protects your breaks." />
+    <title>Seshd</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary navigation">
+        <a class="brand" href="#" aria-label="Seshd home">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span>Seshd</span>
+        </a>
+
+        <nav class="nav-list">
+          <a class="nav-item active" href="#"><span aria-hidden="true">◷</span> Focus</a>
+          <a class="nav-item" href="#"><span aria-hidden="true">□</span> Sessions</a>
+          <a class="nav-item" href="#"><span aria-hidden="true">✦</span> Garden</a>
+        </nav>
+
+        <a class="nav-item settings-link" href="#"><span aria-hidden="true">⚙</span> Settings</a>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Tuesday, August 25</p>
+            <h1>Ready to focus?</h1>
+          </div>
+          <button class="icon-button" type="button" aria-label="Open notifications">○</button>
+        </header>
+
+        <div class="dashboard-grid">
+          <section class="timer-card" aria-labelledby="timer-heading">
+            <div class="mode-switcher" aria-label="Timer mode">
+              <button class="mode-button active" type="button">Focus</button>
+              <button class="mode-button" type="button">Short break</button>
+              <button class="mode-button" type="button">Long break</button>
+            </div>
+
+            <div class="timer-display">
+              <p class="session-label">Session 1 of 4</p>
+              <h2 id="timer-heading">25:00</h2>
+              <p class="timer-prompt">One task. No rush.</p>
+            </div>
+
+            <div class="timer-actions">
+              <button class="secondary-button" type="button" aria-label="Reset timer">↻</button>
+              <button class="primary-button" type="button"><span aria-hidden="true">▶</span> Start focus</button>
+              <button class="secondary-button" type="button" aria-label="Open timer options">•••</button>
+            </div>
+
+            <div class="session-progress" aria-label="One of four sessions">
+              <span class="progress-dot complete"></span>
+              <span class="progress-dot"></span>
+              <span class="progress-dot"></span>
+              <span class="progress-dot"></span>
+            </div>
+          </section>
+
+          <aside class="today-panel" aria-labelledby="today-heading">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Your rhythm</p>
+                <h2 id="today-heading">Today</h2>
+              </div>
+              <span class="status-badge">On track</span>
+            </div>
+
+            <div class="stat-grid">
+              <div class="stat-card"><strong>3</strong><span>sessions</span></div>
+              <div class="stat-card"><strong>75</strong><span>focus min</span></div>
+            </div>
+
+            <div class="break-card">
+              <div class="break-icon" aria-hidden="true">☘</div>
+              <div>
+                <h3>Break protection is on</h3>
+                <p>Your next break will begin after this focus session.</p>
+              </div>
+            </div>
+
+            <div class="next-up"><span>Next up</span><strong>5 minute break</strong></div>
+          </aside>
+        </div>
+
+        <footer class="focus-note"><span aria-hidden="true">“</span> Small, protected stretches of focus add up.</footer>
+      </main>
+    </div>
+
+    <script type="module" src="/src/renderer.js"></script>
+  </body>
+</html>
