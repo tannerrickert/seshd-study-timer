@@ -27,7 +27,46 @@
  */
 
 import './index.css';
+const timerDisplay = document.querySelector('#timer-heading');
+const timerToggle = document.querySelector('#timer-toggle');
+const timerReset = document.querySelector('#timer-reset');
 
-console.log(
-  '👋 This message is being logged by "renderer.js", included via Vite',
-);
+let timeRemaining = 25 * 60;
+let timerInterval = null;
+
+/**
+ * Updates the display of the timer
+ */
+function updateDisplay() {
+  let minutes = Math.floor(timeRemaining / 60);
+  let seconds = String(timeRemaining % 60).padStart(2, '0');
+  timerDisplay.textContent = `${minutes}:${seconds}`;
+}
+
+/**
+ * Descreases the time. Used in the startTimer function.
+ */
+function tick() {
+  if(timeRemaining > 0) {
+    timeRemaining--;
+    updateDisplay();
+  }
+
+  if(timeRemaining === 0) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+
+/**
+ * Starts the timer. Uses setInterval to help tick descrease the timer.
+ * @returns if the timerInterval is null.
+ */
+function startTimer() {
+  if(timerInterval !== null) return;
+  timerInterval = setInterval(tick, 1000);
+}
+
+timerToggle.addEventListener('click', startTimer);
+
+updateDisplay();
