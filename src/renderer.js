@@ -33,7 +33,7 @@ const timerReset = document.querySelector('#timer-reset');
 const modeButtons = document.querySelectorAll('.mode-button');
 
 const timerModes = {
-  focus: { duration: 25 * 60, label: 'focus' },
+  focus: { duration: 1 * 60, label: 'focus' },
   shortBreak: { duration: 5 * 60, label: 'short break' },
   longBreak: { duration: 15 * 60, label: 'long break' },
 };
@@ -75,6 +75,7 @@ function tick() {
 
     if (activeMode === 'focus') {
       selectMode('shortBreak');
+      startTimer();
     } else {
       setStartLabel();
     }
