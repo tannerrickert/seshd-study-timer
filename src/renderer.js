@@ -31,16 +31,23 @@ const timerDisplay = document.querySelector('#timer-heading');
 const timerToggle = document.querySelector('#timer-toggle');
 const timerReset = document.querySelector('#timer-reset');
 const modeButtons = document.querySelectorAll('.mode-button');
+const sessionLabel = document.querySelector('.session-label');
 
+const sessionsPerCycle = 4;
 const timerModes = {
-  focus: { duration: 1 * 60, label: 'focus' },
+  focus: { duration: 25 * 60, label: 'focus' },
   shortBreak: { duration: 5 * 60, label: 'short break' },
   longBreak: { duration: 15 * 60, label: 'long break' },
 };
 
 let activeMode = 'focus';
+let currentSession = 1;
 let timeRemaining = timerModes[activeMode].duration;
 let timerInterval = null;
+
+function updateSessionLabel() {
+  sessionLabel.textContent = `Session ${currentSession} of ${sessionsPerCycle}`;
+}
 
 function setToggleLabel(label, icon) {
   timerToggle.innerHTML = `<span aria-hidden="true">${icon}</span> ${label}`;
@@ -74,10 +81,19 @@ function tick() {
     timerInterval = null;
 
     if (activeMode === 'focus') {
-      selectMode('shortBreak');
+      const breakMode = currentSession === sessionsPerCycle
+        ? 'longBreak'
+        : 'shortBreak';
+      selectMode(breakMode);
       startTimer();
+    } else if (activeMode === 'shortBreak') {
+      currentSession++;
+      updateSessionLabel();
+      selectMode('focus');
     } else {
-      setStartLabel();
+      currentSession = 1;
+      updateSessionLabel();
+      selectMode('focus');
     }
   }
 }
