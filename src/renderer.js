@@ -33,6 +33,12 @@ const timerReset = document.querySelector('#timer-reset');
 
 let timeRemaining = 25 * 60;
 let timerInterval = null;
+const sessionDuration = 25 * 60;
+
+function setToggleLabel(label, icon) {
+  timerToggle.innerHTML = `<span aria-hidden="true">${icon}</span> ${label}`;
+  timerToggle.setAttribute('aria-label', label);
+}
 
 /**
  * Updates the display of the timer
@@ -55,6 +61,7 @@ function tick() {
   if(timeRemaining === 0) {
     clearInterval(timerInterval);
     timerInterval = null;
+    setToggleLabel('Start focus', '▶');
   }
 }
 
@@ -65,8 +72,31 @@ function tick() {
 function startTimer() {
   if(timerInterval !== null) return;
   timerInterval = setInterval(tick, 1000);
+  setToggleLabel('Pause focus', 'Ⅱ');
 }
 
-timerToggle.addEventListener('click', startTimer);
+function pauseTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  setToggleLabel('Resume focus', '▶');
+}
+
+function toggleTimer() {
+  if (timerInterval === null) {
+    startTimer();
+  } else {
+    pauseTimer();
+  }
+}
+
+function resetTimer() {
+  pauseTimer();
+  timeRemaining = sessionDuration;
+  updateDisplay();
+  setToggleLabel('Start focus', '▶');
+}
+
+timerToggle.addEventListener('click', toggleTimer);
+timerReset.addEventListener('click', resetTimer);
 
 updateDisplay();
