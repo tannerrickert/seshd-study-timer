@@ -30,14 +30,25 @@ import './index.css';
 const timerDisplay = document.querySelector('#timer-heading');
 const timerToggle = document.querySelector('#timer-toggle');
 const timerReset = document.querySelector('#timer-reset');
+const modeButtons = document.querySelectorAll('.mode-button');
 
-let timeRemaining = 25 * 60;
+const timerModes = {
+  focus: { duration: 25 * 60, label: 'focus' },
+  shortBreak: { duration: 5 * 60, label: 'short break' },
+  longBreak: { duration: 15 * 60, label: 'long break' },
+};
+
+let activeMode = 'focus';
+let timeRemaining = timerModes[activeMode].duration;
 let timerInterval = null;
-const sessionDuration = 25 * 60;
 
 function setToggleLabel(label, icon) {
   timerToggle.innerHTML = `<span aria-hidden="true">${icon}</span> ${label}`;
   timerToggle.setAttribute('aria-label', label);
+}
+
+function setStartLabel() {
+  setToggleLabel(`Start ${timerModes[activeMode].label}`, '▶');
 }
 
 /**
@@ -61,7 +72,7 @@ function tick() {
   if(timeRemaining === 0) {
     clearInterval(timerInterval);
     timerInterval = null;
-    setToggleLabel('Start focus', '▶');
+    setStartLabel();
   }
 }
 
@@ -72,15 +83,35 @@ function tick() {
 function startTimer() {
   if(timerInterval !== null) return;
   timerInterval = setInterval(tick, 1000);
-  setToggleLabel('Pause focus', 'Ⅱ');
+  setToggleLabel(`Pause ${timerModes[activeMode].label}`, 'Ⅱ');
 }
 
+/**
+ * Pauses the timer
+ */
 function pauseTimer() {
   clearInterval(timerInterval);
   timerInterval = null;
-  setToggleLabel('Resume focus', '▶');
+  setToggleLabel(`Resume ${timerModes[activeMode].label}`, '▶');
 }
 
+function selectMode(mode) {
+  pauseTimer();
+  activeMode = mode;
+  timeRemaining = timerModes[activeMode].duration;
+  updateDisplay();
+  setStartLabel();
+
+  modeButtons.forEach((button) => {
+    const isActive = button.dataset.mode === activeMode;
+    button.classList.toggle('active', isActive);
+    button.setAttribute('aria-pressed', isActive);
+  });
+}
+
+/**
+ * Toggles timer in start state and pause state
+ */
 function toggleTimer() {
   if (timerInterval === null) {
     startTimer();
@@ -89,14 +120,20 @@ function toggleTimer() {
   }
 }
 
+/**
+ * Resets the timer
+ */
 function resetTimer() {
   pauseTimer();
-  timeRemaining = sessionDuration;
+  timeRemaining = timerModes[activeMode].duration;
   updateDisplay();
-  setToggleLabel('Start focus', '▶');
+  setStartLabel();
 }
 
 timerToggle.addEventListener('click', toggleTimer);
 timerReset.addEventListener('click', resetTimer);
+modeButtons.forEach((button) => {
+  button.addEventListener('click', () => selectMode(button.dataset.mode));
+});
 
 updateDisplay();
