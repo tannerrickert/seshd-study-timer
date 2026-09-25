@@ -72,7 +72,12 @@ function tick() {
   if(timeRemaining === 0) {
     clearInterval(timerInterval);
     timerInterval = null;
-    setStartLabel();
+
+    if (activeMode === 'focus') {
+      selectMode('shortBreak');
+    } else {
+      setStartLabel();
+    }
   }
 }
 
