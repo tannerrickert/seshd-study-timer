@@ -32,18 +32,30 @@ const timerToggle = document.querySelector('#timer-toggle');
 const timerReset = document.querySelector('#timer-reset');
 const modeButtons = document.querySelectorAll('.mode-button');
 const sessionLabel = document.querySelector('.session-label');
+const timerCard = document.querySelector('.timer-card');
+const timerControls = timerCard.querySelectorAll('button');
 
 const sessionsPerCycle = 4;
 const timerModes = {
-  focus: { duration: 25 * 60, label: 'focus' },
-  shortBreak: { duration: 5 * 60, label: 'short break' },
-  longBreak: { duration: 15 * 60, label: 'long break' },
+  focus: { duration: 0.1 * 60, label: 'focus' },
+  shortBreak: { duration: 0.1 * 60, label: 'short break' },
+  longBreak: { duration: 0.1 * 60, label: 'long break' },
 };
 
 let activeMode = 'focus';
 let currentSession = 1;
 let timeRemaining = timerModes[activeMode].duration;
 let timerInterval = null;
+let isBreakEnforced = false;
+
+function setBreakEnforcement(isEnforced) {
+  isBreakEnforced = isEnforced;
+  timerCard.classList.toggle('break-active', isBreakEnforced);
+
+  timerControls.forEach((button) => {
+    button.disabled = isBreakEnforced;
+  });
+}
 
 function updateSessionLabel() {
   sessionLabel.textContent = `Session ${currentSession} of ${sessionsPerCycle}`;
@@ -71,12 +83,12 @@ function updateDisplay() {
  * Descreases the time. Used in the startTimer function.
  */
 function tick() {
-  if(timeRemaining > 0) {
+  if (timeRemaining > 0) {
     timeRemaining--;
     updateDisplay();
   }
 
-  if(timeRemaining === 0) {
+  if (timeRemaining === 0) {
     clearInterval(timerInterval);
     timerInterval = null;
 
@@ -84,13 +96,16 @@ function tick() {
       const breakMode = currentSession === sessionsPerCycle
         ? 'longBreak'
         : 'shortBreak';
+      setBreakEnforcement(true);
       selectMode(breakMode);
       startTimer();
     } else if (activeMode === 'shortBreak') {
+      setBreakEnforcement(false);
       currentSession++;
       updateSessionLabel();
       selectMode('focus');
     } else {
+      setBreakEnforcement(false);
       currentSession = 1;
       updateSessionLabel();
       selectMode('focus');
@@ -103,7 +118,7 @@ function tick() {
  * @returns if the timerInterval is null.
  */
 function startTimer() {
-  if(timerInterval !== null) return;
+  if (timerInterval !== null) return;
   timerInterval = setInterval(tick, 1000);
   setToggleLabel(`Pause ${timerModes[activeMode].label}`, 'Ⅱ');
 }
