@@ -20,13 +20,13 @@
           <a class="nav-item" href="#"><span aria-hidden="true">✦</span> Garden</a>
         </nav>
 
-        <a class="nav-item settings-link" href="#"><span aria-hidden="true">⚙</span> Settings</a>
+          <button class="nav-item settings-link" type="button" id="open-settings"><span aria-hidden="true">⚙</span> Settings</button>
       </aside>
 
       <main class="main-content">
         <header class="topbar">
           <div>
-            <p class="eyebrow">Tuesday, August 25</p>
+            <p class="eyebrow" id="today-date"></p>
             <h1>Ready to focus?</h1>
           </div>
           <button class="icon-button" type="button" aria-label="Open notifications">○</button>
@@ -49,7 +49,7 @@
             <div class="timer-actions">
               <button class="secondary-button" type="button" aria-label="Reset timer" id="timer-reset">↻</button>
               <button class="primary-button" type="button" id="timer-toggle"><span aria-hidden="true">▶</span> Start focus</button>
-              <button class="secondary-button" type="button" aria-label="Open timer options">•••</button>
+              <button class="secondary-button" type="button" aria-label="Open timer options" id="open-timer-options">•••</button>
             </div>
 
             <div class="break-enforcement" role="status" aria-live="polite">
@@ -61,8 +61,8 @@
               </div>
             </div>
 
-            <div class="session-progress" aria-label="One of four sessions">
-              <span class="progress-dot complete"></span>
+            <div class="session-progress" id="session-progress" aria-label="Session progress">
+              <span class="progress-dot"></span>
               <span class="progress-dot"></span>
               <span class="progress-dot"></span>
               <span class="progress-dot"></span>
@@ -79,8 +79,8 @@
             </div>
 
             <div class="stat-grid">
-              <div class="stat-card"><strong>3</strong><span>sessions</span></div>
-              <div class="stat-card"><strong>75</strong><span>focus min</span></div>
+              <div class="stat-card"><strong id="today-sessions">0</strong><span>sessions</span></div>
+              <div class="stat-card"><strong id="today-focus-minutes">0</strong><span>focus min</span></div>
             </div>
 
             <div class="break-card">
@@ -91,13 +91,36 @@
               </div>
             </div>
 
-            <div class="next-up"><span>Next up</span><strong>5 minute break</strong></div>
+            <div class="next-up"><span>Next up</span><strong id="next-up">5 minute break</strong></div>
           </aside>
         </div>
 
         <footer class="focus-note"><span aria-hidden="true">“</span> Small, protected stretches of focus add up.</footer>
       </main>
     </div>
+
+    <dialog class="settings-dialog" id="settings-dialog" aria-labelledby="settings-title">
+      <form method="dialog" id="settings-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">Make it yours</p>
+            <h2 id="settings-title">Timer settings</h2>
+          </div>
+          <button class="dialog-close" type="button" id="close-settings" aria-label="Close settings">×</button>
+        </div>
+        <p class="dialog-copy">Changes apply to the next timer you start and are saved on this computer.</p>
+        <div class="settings-fields">
+          <label>Focus minutes <input id="focus-duration" type="number" min="1" max="180" required /></label>
+          <label>Short break <input id="short-break-duration" type="number" min="1" max="60" required /></label>
+          <label>Long break <input id="long-break-duration" type="number" min="1" max="90" required /></label>
+          <label>Sessions before long break <input id="sessions-per-cycle" type="number" min="2" max="12" required /></label>
+        </div>
+        <div class="dialog-actions">
+          <button class="secondary-dialog-button" type="button" id="restore-defaults">Restore defaults</button>
+          <button class="primary-button" type="submit">Save changes</button>
+        </div>
+      </form>
+    </dialog>
 
     <script type="module" src="/src/renderer.js"></script>
   </body>
