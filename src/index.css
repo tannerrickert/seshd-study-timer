@@ -191,6 +191,16 @@ h1 { margin-bottom: 0; font-size: clamp(25px, 3.5vw, 34px); font-weight: 600; le
 .timer-card.break-active .timer-actions { display: none; }
 .timer-card.break-active .break-enforcement { display: flex; }
 .timer-card button:disabled { cursor: not-allowed; opacity: .5; }
+.break-warning {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: -7px auto 15px;
+  color: var(--warm);
+  font-size: 12px;
+}
+.break-warning[hidden] { display: none; }
 .primary-button {
   display: flex;
   align-items: center;
@@ -309,6 +319,20 @@ h1 { margin-bottom: 0; font-size: clamp(25px, 3.5vw, 34px); font-weight: 600; le
   font: inherit;
 }
 .settings-fields input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgb(164 195 162 / 13%); }
+.enforcement-setting {
+  display: flex;
+  gap: 11px;
+  margin-top: 20px;
+  padding: 14px;
+  border: 1px solid #35473a;
+  border-radius: 12px;
+  background: #1a221c;
+  cursor: pointer;
+}
+.enforcement-setting input { width: 16px; height: 16px; margin: 1px 0 0; accent-color: var(--green); }
+.enforcement-setting span { display: grid; gap: 4px; }
+.enforcement-setting strong { font-size: 12px; }
+.enforcement-setting small { color: var(--muted); font-size: 11px; line-height: 1.45; }
 .dialog-actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 25px; }
 .secondary-dialog-button {
   padding: 0;

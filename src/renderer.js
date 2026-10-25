@@ -12,6 +12,7 @@ const todaySessions = document.querySelector('#today-sessions');
 const todayFocusMinutes = document.querySelector('#today-focus-minutes');
 const nextUp = document.querySelector('#next-up');
 const todayDate = document.querySelector('#today-date');
+const breakWarning = document.querySelector('#break-warning');
 const settingsDialog = document.querySelector('#settings-dialog');
 const settingsForm = document.querySelector('#settings-form');
 const settingsInputs = {
@@ -19,12 +20,13 @@ const settingsInputs = {
   shortBreak: document.querySelector('#short-break-duration'),
   longBreak: document.querySelector('#long-break-duration'),
   sessionsPerCycle: document.querySelector('#sessions-per-cycle'),
+  breakEnforcement: document.querySelector('#break-enforcement-enabled'),
 };
 
 const settingsKey = 'seshd-settings';
 const historyKey = 'seshd-focus-history';
 const timerStateKey = 'seshd-timer-state';
-const defaults = { focus: 25, shortBreak: 5, longBreak: 15, sessionsPerCycle: 4 };
+const defaults = { focus: 25, shortBreak: 5, longBreak: 15, sessionsPerCycle: 4, breakEnforcement: false };
 
 function readStoredJson(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; }
@@ -103,14 +105,22 @@ function finishTimer() {
   if (activeMode === 'focus') {
     recordCompletedFocus();
     const breakMode = currentSession === settings.sessionsPerCycle ? 'longBreak' : 'shortBreak';
-    setBreakEnforcement(true);
-    selectMode(breakMode, true);
+    setBreakEnforcement(settings.breakEnforcement);
+    selectMode(breakMode, settings.breakEnforcement);
+    if (settings.breakEnforcement) {
+      window.seshdBreak?.start({
+        durationSeconds: getDuration(breakMode),
+        type: breakMode === 'longBreak' ? 'long' : 'short',
+      });
+    }
     startTimer();
   } else if (activeMode === 'shortBreak') {
+    if (settings.breakEnforcement) window.seshdBreak?.end();
     setBreakEnforcement(false);
     currentSession += 1;
     selectMode('focus');
   } else {
+    if (settings.breakEnforcement) window.seshdBreak?.end();
     setBreakEnforcement(false);
     currentSession = 1;
     selectMode('focus');
@@ -121,6 +131,7 @@ function tick() {
   timeRemaining = Math.max(0, timeRemaining - 1);
   updateDisplay();
   saveTimerState();
+  if (activeMode === 'focus' && settings.breakEnforcement && timeRemaining === 60) breakWarning.hidden = false;
   if (timeRemaining === 0) {
     clearInterval(timerInterval);
     timerInterval = null;
@@ -146,6 +157,7 @@ function selectMode(mode, keepBreakEnforcement = false) {
   activeMode = mode;
   timeRemaining = getDuration(mode);
   if (!keepBreakEnforcement) setBreakEnforcement(false);
+  breakWarning.hidden = true;
   updateDisplay();
   setStartLabel();
   updateSessionLabel();
@@ -173,6 +185,7 @@ function populateSettings() {
   settingsInputs.shortBreak.value = settings.shortBreak;
   settingsInputs.longBreak.value = settings.longBreak;
   settingsInputs.sessionsPerCycle.value = settings.sessionsPerCycle;
+  settingsInputs.breakEnforcement.checked = settings.breakEnforcement;
 }
 
 function openSettings() { populateSettings(); settingsDialog.showModal(); }
@@ -185,6 +198,7 @@ function saveSettings(event) {
     shortBreak: Number(settingsInputs.shortBreak.value),
     longBreak: Number(settingsInputs.longBreak.value),
     sessionsPerCycle: Number(settingsInputs.sessionsPerCycle.value),
+    breakEnforcement: settingsInputs.breakEnforcement.checked,
   };
   if (currentSession > settings.sessionsPerCycle) currentSession = 1;
   localStorage.setItem(settingsKey, JSON.stringify(settings));
@@ -212,6 +226,7 @@ document.querySelector('#restore-defaults').addEventListener('click', () => {
   settingsInputs.shortBreak.value = defaults.shortBreak;
   settingsInputs.longBreak.value = defaults.longBreak;
   settingsInputs.sessionsPerCycle.value = defaults.sessionsPerCycle;
+  settingsInputs.breakEnforcement.checked = defaults.breakEnforcement;
 });
 settingsForm.addEventListener('submit', saveSettings);
 

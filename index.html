@@ -61,6 +61,11 @@
               </div>
             </div>
 
+            <div class="break-warning" id="break-warning" role="status" aria-live="polite" hidden>
+              <span aria-hidden="true">◷</span>
+              <span>Your protected break begins in <strong>1 minute</strong>.</span>
+            </div>
+
             <div class="session-progress" id="session-progress" aria-label="Session progress">
               <span class="progress-dot"></span>
               <span class="progress-dot"></span>
@@ -115,6 +120,10 @@
           <label>Long break <input id="long-break-duration" type="number" min="1" max="90" required /></label>
           <label>Sessions before long break <input id="sessions-per-cycle" type="number" min="2" max="12" required /></label>
         </div>
+        <label class="enforcement-setting">
+          <input id="break-enforcement-enabled" type="checkbox" />
+          <span><strong>Protect breaks with a full-screen lock</strong><small>When a focus session ends, Seshd opens a full-screen break countdown. You can still switch apps or quit Seshd.</small></span>
+        </label>
         <div class="dialog-actions">
           <button class="secondary-dialog-button" type="button" id="restore-defaults">Restore defaults</button>
           <button class="primary-button" type="submit">Save changes</button>
